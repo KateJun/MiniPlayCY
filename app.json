@@ -1,26 +1,29 @@
 {
-  "pages":[
+  "pages": [
     "pages/index/index",
-    "pages/logs/logs"
+    "pages/logs/logs",
+    "pages/templateSelect/template"
   ],
-  "window":{
-    "backgroundTextStyle":"light",
+  "window": {
+    "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "WeChat",
-    "navigationBarTextStyle":"black"
+    "navigationBarTextStyle": "black"
   },
   "tabBar": {
-    "list": [{
-      "pagePath": "pages/index/index",
-      "text": "词云",
-      "iconPath": "/pages/images/tab-yuns.png",
-      "selectedIconPath": "/pages/images/tab-yun.png"
-    },{
-      "pagePath": "pages/index/index",
-      "text": "我的",
-      "iconPath": "/pages/images/tab-mes.png",
-      "selectedIconPath": "/pages/images/tab-me.png"
-    }
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "词云",
+        "iconPath": "/pages/images/tab-yuns.png",
+        "selectedIconPath": "/pages/images/tab-yun.png"
+      },
+      {
+        "pagePath": "pages/index/index",
+        "text": "我的",
+        "iconPath": "/pages/images/tab-mes.png",
+        "selectedIconPath": "/pages/images/tab-me.png"
+      }
     ]
   }
 }
