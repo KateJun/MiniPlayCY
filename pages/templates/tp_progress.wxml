@@ -1,0 +1,10 @@
+<template name="progress">
+  <view class='tp_progress_cover' style='display:{{isLoading ? "flex" : "none"}}'>
+    <image src='../images/cover.png' class='tp_progress_cover_bg'></image>
+    <view class='tp_progress_container'>
+      <image class='tp_progress_bg' src='../images/progress_bg.png'></image>
+      <image class='tp_progress_progress' src='../images/progress.png' mode="scaleToFill" style='width:600rpx;'></image>
+    </view>
+    <text class='tp_progress_text'>正在很努力地生成图像中...</text>
+  </view>
+</template>
