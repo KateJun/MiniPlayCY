@@ -1,0 +1,19 @@
+/* pages/mine/mine.wxss */
+@import "../index/index.wxss";
+.flex_box{
+  padding-top: 60rpx; 
+}
+
+.icon_empty {
+  margin-top: 260rpx;
+  width: 400rpx;
+  height: 400rpx;
+}
+
+.text_empty {
+  color: #43c4a3;
+  font-size: 24rpx;
+  width: 100%;
+  text-align: center;
+  margin-top: 10rpx;
+}

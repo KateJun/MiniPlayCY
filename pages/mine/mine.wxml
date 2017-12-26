@@ -1,0 +1,13 @@
+<!--pages/mine/mine.wxml-->
+<include src="../index/bg.wxml" />
+<include src="empty.wxml"/>
+<view style='position:fixed;width:100%'>   
+  <radio-group bindchange="tabClick" class="flex_box">
+    <view class="flex_item">
+      <label class="{{currentPage == item.id?'active':''}}" wx:for="{{labels}}" wx:key="key">
+        {{item.name }}
+        <radio value="{{item.id}}" hidden="true" checked="{{item.checked}}"></radio>
+      </label>
+    </view>
+  </radio-group>
+</view>

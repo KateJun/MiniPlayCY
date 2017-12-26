@@ -1,13 +1,46 @@
 <!--index.wxml-->
+<include src="bg.wxml" />
 <view class="container">
-  <view class="userinfo">
+  <!-- <view class="userinfo">
     <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
     <block wx:else>
       <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" background-size="cover"></image>
       <text class="userinfo-nickname">{{userInfo.nickName}}</text>
     </block>
+  </view> -->
+
+  <image src='../images/logo.png' class='logo' mode='aspectFit'></image>
+
+
+  <radio-group bindchange="tabClick" class="flex_box">
+    <view class="flex_item">
+      <label class="{{currentPage == item.id?'active':''}}" wx:for="{{labels}}" wx:key="key">
+        {{item.name }}
+        <radio value="{{item.id}}" hidden="true" checked="{{item.checked}}"></radio>
+      </label>
+    </view>
+  </radio-group>
+
+  <view class='label-content-box'>
+    <view class="touch-item {{item.isTouchMove ? 'touch-move-active' : ''}}" data-index="{{index}}" bindtouchstart="touchstart" bindtouchmove="touchmove" wx:for="{{items}}" wx:key="">
+      <!-- <block wx:if="{{item.isNull}}">
+        <view class="content-add">
+          <input   bindinput='editor' data-id='{{index}}'  placeholder="+" type='text'></input>
+        </view>
+      </block>
+      <block wx:else> -->
+        <view class="content">
+          <input class="content-input" data-id='{{index}}' placeholder-class='content-add-input'    placeholder="+"  bindinput='editor' focus='{{false}}' value='{{item.content}}' type='text'></input>
+        </view>
+        <view class="del" catchtap="del" data-index="{{index}}">删除</view>
+      <!-- </block> -->
+    </view>
   </view>
-  <view class="usermotto">
-    <text class="user-motto">{{motto}}</text>
+
+  <view class='refresh-box' bindtap='refresh'>
+    <image src='../images/refresh.png' mode='aspectFit' class='refresh'></image>
+    <text class='refresh-text'>换一批</text>
   </view>
+
+  <button class='button-create' hover-class='button-click' bindtap='createPhoto'>制作词云头像</button>
 </view>
