@@ -88,6 +88,9 @@ Page({
   // 制作头像
   createPhoto() {
     console.log("制作头像")
+    wx.navigateTo({
+      url: '../templateSelect/template',
+    })
 
   },
 
