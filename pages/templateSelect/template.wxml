@@ -2,7 +2,7 @@
 <import src="../templates/tp_progress.wxml" />
 <form class='form' bindsubmit='submit'>
   <view class='tps_container'>
-    <image src='../images/bg.png' class='tps_bg'></image>
+    <image src='../images/bg.jpg' class='tps_bg'></image>
     <scroll-view scroll-y='true' class='tps_content flex_auto' style='height:{{contentHeight}}px;'>
       <radio-group bindchange='selectedChanged'>
         <block wx:for='{{templates}}' wx:for-item='templateDouble' wx:key="templateDouble[0].key" wx:for-index='i'>
@@ -10,20 +10,20 @@
             <view class='tps_content_item_container'>
               <image src='{{templateDouble[0].img}}' class='tps_content_item_img {{templateDouble[0].isChecked ? "tps_content_item_img_checked" : ""}}'>
               </image>
-              <radio class='o_trans tps_content_item_radio ab' checked='{{templateDouble[0].isChecked}}' value='{{templateDouble[0].id}}'></radio>
+              <radio class='o_trans tps_content_item_radio p_a' checked='{{templateDouble[0].isChecked}}' value='{{templateDouble[0].id}}'></radio>
             </view>
             <view class='tps_content_item_container' style='visibility:{{templateDouble.length < 2 ? "hidden" : "visible"}};'>
               <image src='{{templateDouble[1].img}}' class='tps_content_item_img {{templateDouble[1].isChecked ? "tps_content_item_img_checked" : ""}}'>
               </image>
-              <radio class='o_trans tps_content_item_radio ab' checked='{{(typeof(templateDouble[1]) != "undefined" && typeof(templateDouble[1].isChecked)!= "undefined") ? true : false}}' value='{{(typeof(templateDouble[1]) != "undefined" && typeof(templateDouble[1].id) != "undefined")? templateDouble[1].id : -1}}'></radio>
+              <radio class='o_trans tps_content_item_radio p_a' checked='{{(typeof(templateDouble[1]) != "undefined" && typeof(templateDouble[1].isChecked)!= "undefined") ? true : false}}' value='{{(typeof(templateDouble[1]) != "undefined" && typeof(templateDouble[1].id) != "undefined")? templateDouble[1].id : -1}}'></radio>
             </view>
           </view>
         </block>
       </radio-group>
     </scroll-view>
     <view class='tps_bottom ta_center'>
-      <image src='../images/bg_bottom.png' class='tps_img_bottom'></image>
-      <button class='ta_center tps_text_btn btn d_ib' form-type='submit'>生成词云头像</button>
+      <image src='../images/bg_bottom.jpg' class='tps_img_bottom'></image>
+      <button class='ta_center tps_text_btn btn_radius_white d_ib' form-type='submit'>生成词云头像</button>
     </view>
     <template is="progress" data="{{...progress}}" />
   </view>

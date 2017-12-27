@@ -1,0 +1,5 @@
+<!--pages/result/result.wxml-->
+<import src="../templates/tp_progress.wxml" />
+<view>
+<template is="progress" data="{{...progress}}" />
+</view>
