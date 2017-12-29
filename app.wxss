@@ -22,3 +22,17 @@ page {
   z-index: -1;
   position: fixed;
 }
+.content_bg{
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  z-index: -1;
+}
+.botom_bg{
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  position: absolute;
+  left: 0;
+  top: 0;
+}

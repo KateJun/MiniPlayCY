@@ -2,7 +2,7 @@
 <import src="../templates/tp_progress.wxml" />
 <form class='form' bindsubmit='submit'>
   <view class='tps_container'>
-    <image src='../images/bg.jpg' class='tps_bg'></image>
+    <image src='../images/bg.jpg' class='content_bg'></image>
     <scroll-view scroll-y='true' class='tps_content flex_auto' style='height:{{contentHeight}}px;'>
       <radio-group bindchange='selectedChanged'>
         <block wx:for='{{templates}}' wx:for-item='templateDouble' wx:key="templateDouble[0].key" wx:for-index='i'>
@@ -22,7 +22,7 @@
       </radio-group>
     </scroll-view>
     <view class='tps_bottom ta_center'>
-      <image src='../images/bg_bottom.jpg' class='tps_img_bottom'></image>
+      <image src='../images/bg_bottom.jpg' class='botom_bg'></image>
       <button class='ta_center tps_text_btn btn_radius_white d_ib' form-type='submit'>生成词云头像</button>
     </view>
     <template is="progress" data="{{...progress}}" />

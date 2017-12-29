@@ -1,2 +1,64 @@
 /* pages/result/result.wxss */
 @import "../templates/tp_progress.wxss";
+
+.result {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.result_canvas_pic {
+  width: 100%;
+  height: 678rpx;
+}
+
+.result_canvas_palette {
+  width: 100%;
+  height: 420rpx;
+  position: fixed;
+  bottom: 120rpx;
+  left: 0;
+  z-index: 100;
+}
+
+/*底部*/
+
+.result_bottom_container {
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 120rpx;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+.result_btn {
+  width: 0;
+  display: inline-flex;
+  flex: auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.result_divider {
+  color: #8988bc;
+  width: 0;
+  margin: 40rpx 0;
+  border: #8988bc 0.5rpx solid;
+}
+
+.result_btn_img {
+  width: 46rpx;
+  height: 46rpx;
+}
+
+.result_btn_text {
+  color: #d9dbe8;
+  font-size: 22rpx;
+  margin-top: 2rpx;
+}

@@ -1,6 +1,6 @@
 <template name="progress">
   <view class='tp_progress_cover' style='display:{{isLoading ? "flex" : "none"}}'>
-    <image src='../images/cover.png' class='tp_progress_cover_bg'></image>
+    <image src='../images/cover.jpg' class='tp_progress_cover_bg'></image>
     <view class='tp_progress_container'>
       <view class="progress">
         <view class="progress-bar progress-bar-info progress-bar-striped active" style="width: {{progress}};">

@@ -8,6 +8,50 @@ Page({
     progress: {
       isLoading: false,//是否显示加载框
       progress: '0%'//进度
+    },
+    buttons: [{
+      name: '保存',
+      img: '../images/save.png',
+      clickFunc: 'save'
+    }, {
+      name: '下载',
+      img: '../images/download.png',
+      clickFunc: 'download'
+    }, {
+      name: '分享',
+      img: '../images/share.png',
+      clickFunc: 'share'
+    }],
+    //canvas相关
+    screenWH:[],
+    baseWidth:750,
+    ratio: 1,
+    tip: {
+      text: '目前最多可支持选择三种颜色',
+      color: '#49ddad',
+      fontSize: 22,
+      xy:[60, 5]
+    },
+
+    CANVAS_PIC:'canvas_pic',
+    CANVAS_PALETTE: 'canvas_palette',
+
+  },
+  getScreenWH: function () {
+    try {
+      var res = wx.getSystemInfoSync();
+      var wh = this.data.screenWH;
+      wh.push(res.windowWidth);
+      wh.push(res.windowHeight);
+      this.setData({
+        screenWH: wh
+      });
+      this.data.screenWH = wh;
+      this.data.ratio = this.data.screenWH[0] / this.data.baseWidth;
+      return true;
+    } catch (e) {
+      console.log('Get System info error!');
+      return false;
     }
   },
   showLoading: function () {
@@ -21,18 +65,18 @@ Page({
     });
     this.startLoading(0);
   },
-  requestData:function(){
+  requestData: function () {
     this.showLoading();
     var that = this;
     wx.request({
       url: '',
-      success:function(e){
+      success: function (e) {
 
       },
-      fail:function(e){
+      fail: function (e) {
 
       },
-      complete:function(){
+      complete: function () {
         that.finishProgressBar();
       }
     })
@@ -65,17 +109,45 @@ Page({
     changed['progress.isLoading'] = true;
     changed['progress.progress'] = "100%";
     this.setData(changed);
-    setTimeout(function(){
+    setTimeout(function () {
       var changed = {};
       changed['progress.isLoading'] = false;
       that.setData(changed);
-    },1000);
+    }, 1000);
   },
+
+  drawCanvas:function(){
+    var that = this;
+    
+    this.drawPalette();
+  },
+
+  drawPalette: function () {
+    var canvas = wx.createCanvasContext(this.data.CANVAS_PALETTE);
+    this.drawTipText(canvas);
+
+    canvas.draw();
+  },
+
+  drawTipText: function (canvas) {
+    canvas.save();
+    canvas.setFillStyle(this.data.tip.color);
+    canvas.setFontSize(this.scale(this.data.tip.fontSize));
+    canvas.fillText(this.data.tip.text, this.scale(this.data.tip.xy[0]), this.scale(this.data.tip.xy[1] + this.data.tip.fontSize));
+    canvas.restore();
+  },
+
+  scale: function (x) {
+    return x * this.data.ratio;
+  },
+
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
     var data = options.data;
+    this.getScreenWH();
+    this.drawCanvas();
   },
 
   /**
