@@ -20,27 +20,57 @@ Page({
     }, {
       name: '分享',
       img: '../images/share.png',
-      clickFunc: 'share'
     }],
+    touchStartPosition: -1,
+    selectedColorPosition: -1,//选中的颜色
+    selectedColorValue: '',//选中的色值
     //canvas相关
-    screenWH:[],
-    baseWidth:750,
+    screenWH: [],
+    baseWidth: 750,
     ratio: 1,
+    //生成的图片
+    image: {
+      xy: [0, 48],
+      wh: [630, 630],
+      imgUrl: '../images/img_0.png',
+      radius: 10
+    },
+
+    //调色板
     tip: {
       text: '目前最多可支持选择三种颜色',
       color: '#49ddad',
       fontSize: 22,
-      xy:[60, 5]
+      xy: [60, 20]
+    },
+    palette: {
+      xy: [0, 60],
+      itemRadius: 45,//每个色值的半径
+      colorList: [["#3fe2e2", "#5252f9", "#f1e599", "#3cc781", "#000000"], ["#e7477f", "#f03fe1", "#aae987", "#9966cc", "#64d9f6"], ["#fccf4d", "#ff6f3c", "#00a0ff", "#dffcb5", "#ffcef3"]],
+      colorTouchXYList: [],//所有颜色的点击xy范围,数组4个变量，x1,x2,y1,y2，1<2
+      allColorList:[],//所有色值合并的数组
+      itemMargin: 20,//每个色值互相的间距
+      height: 348,//整个调色板的高度
+      selectedCircleColor: "#08ffa1"//选中效果颜色
     },
 
-    CANVAS_PIC:'canvas_pic',
+    CANVAS_PIC: 'canvas_pic',
     CANVAS_PALETTE: 'canvas_palette',
+
+  },
+  save:function(e){
+
+  },
+  download:function(e){
+
+  },
+  share:function(e){
 
   },
   getScreenWH: function () {
     try {
       var res = wx.getSystemInfoSync();
-      var wh = this.data.screenWH;
+      var wh = [];
       wh.push(res.windowWidth);
       wh.push(res.windowHeight);
       this.setData({
@@ -116,16 +146,46 @@ Page({
     }, 1000);
   },
 
-  drawCanvas:function(){
+  drawCanvas: function () {
     var that = this;
-    
+    this.drawImage();
     this.drawPalette();
+  },
+
+  drawImage: function () {
+    var canvas = wx.createCanvasContext(this.data.CANVAS_PIC);
+    var data = this.data.image;
+    var w = this.scale(data.wh[0]);
+    var h = this.scale(data.wh[1]);
+    var x = (this.data.screenWH[0] - this.scale(data.xy[0]) - w) / 2;
+    var y = this.scale(data.xy[1]);
+    var r = this.scale(data.radius);
+    var imgUrl = data.imgUrl;
+
+    canvas.save();
+    canvas.beginPath();
+    canvas.moveTo(x, y + r);
+    canvas.arc(x + r, y + r, r, -Math.PI, - Math.PI / 2);
+    canvas.lineTo(x + w - r, y);
+    canvas.arc(x + w - r, y + r, r, - Math.PI / 2, 0);
+    canvas.lineTo(x + w, y + h - r);
+    canvas.arc(x + w - r, y + h - r, r, 0, Math.PI / 2);
+    canvas.lineTo(x + r, y + h);
+    canvas.arc(x + r, y + h - r, r, Math.PI / 2, Math.PI);
+    canvas.lineTo(x, y + r);
+    canvas.closePath();
+    canvas.clip();
+
+    canvas.drawImage(imgUrl, x, y, w, h);
+
+    canvas.restore();
+    canvas.draw();
   },
 
   drawPalette: function () {
     var canvas = wx.createCanvasContext(this.data.CANVAS_PALETTE);
     this.drawTipText(canvas);
-
+    this.drawColorPalette(canvas);
     canvas.draw();
   },
 
@@ -137,6 +197,121 @@ Page({
     canvas.restore();
   },
 
+  drawColorPalette: function (canvas) {
+    canvas.save();
+    var data = this.data.palette;
+    var h = this.scale(data.height);
+    var radius = this.scale(data.itemRadius);
+    var xy = data.xy;
+    var itemMargin = this.scale(data.itemMargin);
+    var colorList = data.colorList;
+    var maxCountOneLine = 0;//一行的最多项目数
+    for (var i = 0; i < colorList.length; i++) {
+      maxCountOneLine = Math.max(maxCountOneLine, colorList[i].length);
+    }
+    var marginTop = (h - (radius + itemMargin) * 2 * colorList.length) / 2;
+    var marginLeft = (this.data.screenWH[0] - (radius + itemMargin) * 2 * maxCountOneLine) / 2;
+
+    var left = this.scale(xy[0]) + marginLeft;
+    var top = this.scale(xy[1]) + marginTop;
+    var touchList = null;
+    var allColorList = null;
+    if (!data.colorTouchXYList || data.colorTouchXYList.length < 1) {
+      touchList = [];
+      data.colorTouchXYList = touchList;
+    }
+    if (!data.allColorList || data.allColorList.length < 1){
+      allColorList = [];
+      data.allColorList = allColorList;
+    }
+    var position = 0;
+    for (var i = 0; i < colorList.length; i++) {
+      var y = top + radius + itemMargin + i * (radius + itemMargin) * 2;
+      var colorEachLine = colorList[i];
+      for (var j = 0; j < colorEachLine.length; j++) {
+        var color = colorEachLine[j];
+        var x = left + radius + itemMargin + j * (radius + itemMargin) * 2;
+        canvas.beginPath();
+        canvas.arc(x, y, radius, 0, 2 * Math.PI);
+        canvas.setFillStyle(color);
+        canvas.fill();
+        canvas.closePath();
+        if (touchList) {
+          var touch = [];
+          touchList.push(touch);
+          touch.push(x - radius - itemMargin);
+          touch.push(x + radius + itemMargin);
+          touch.push(y - radius - itemMargin);
+          touch.push(y + radius + itemMargin);
+        }
+        if (allColorList){
+          allColorList.push(color);
+        }
+        if (position == this.data.selectedColorPosition) {
+          canvas.beginPath();
+          canvas.arc(x, y, radius, 0, 2 * Math.PI);
+          canvas.setStrokeStyle(data.selectedCircleColor);
+          canvas.setLineWidth(this.scale(4));
+          canvas.stroke();
+          canvas.closePath();
+        }
+        position++;
+      }
+    }
+    canvas.restore();
+  },
+  touchPaletteStart: function (res) {
+    console.log('调色板点击开始');
+    var t = res.changedTouches[0];
+    var x = t.x;
+    var y = t.y;
+    var id = t.identifier;
+    this.data.touchStartPosition = this.getTouchPalletteColor(x, y).position;
+  },
+  touchPalletteEnd: function (res) {
+    console.log('调色板点击结束');
+    var t = res.changedTouches[0];
+    var x = t.x;
+    var y = t.y;
+    var id = t.identifier;
+    if (this.data.touchStartPosition > -1) {
+      this.checkTouchPallette(x, y);
+    }
+  },
+  getTouchPalletteColor: function (x, y) {
+    var touchXYList = this.data.palette.colorTouchXYList;
+    var allColorList = this.data.palette.allColorList;
+    for (var i = 0; i < touchXYList.length && i < allColorList.length; i++) {
+      var touchXY = touchXYList[i];
+      if (x >= touchXY[0] && x <= touchXY[1] && y >= touchXY[2] && y <= touchXY[3]) {
+        console.log("第" + i + "项颜色被触摸");
+        return { position: i, color: allColorList[i]};
+      }
+    }
+    return {position: -1, color:''};
+  },
+  checkTouchPallette: function (finalX, finalY) {
+
+    var newColor = this.getTouchPalletteColor(finalX, finalY);
+    var newPosition = newColor.position;
+    if (newPosition < 0 || newPosition != this.data.touchStartPosition) {
+      //触摸开始和结束非同一个颜色，此次点击无效
+      this.data.touchStartPosition = -1;
+      return;
+    }
+    
+    if (newPosition == this.data.selectedColorPosition) {//取消选中
+      this.data.selectedColorPosition = -1;
+      this.data.selectedColorValue = '';
+      console.log("第" + newPosition + "项颜色取消选中");
+    } else {//选中另一个
+      this.data.selectedColorPosition = newPosition;
+      this.data.selectedColorValue = newColor.color;
+      console.log("第" + newPosition + "项颜色被选中");
+    }
+    this.data.touchStartPosition = -1;
+    this.drawPalette();
+  },
   scale: function (x) {
     return x * this.data.ratio;
   },
