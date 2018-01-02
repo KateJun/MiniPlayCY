@@ -74,8 +74,8 @@
 .result_btn_checked::after {
   content: "";
   position: absolute;
-  width: 100%p;
-  height: 100%p;
+  width: 200%;
+  height: 200%;
   left: 0;
   top: 0;
   display: inline-block;

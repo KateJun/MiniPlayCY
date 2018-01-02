@@ -59,13 +59,10 @@ Page({
 
   },
   save:function(e){
-
+    console.log("保存被点击");
   },
   download:function(e){
-
-  },
-  share:function(e){
-
+    console.log("下载被点击");
   },
   getScreenWH: function () {
     try {
@@ -370,7 +367,7 @@ Page({
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
-
+  onShareAppMessage: function (e) {
+    console.log("分享被触发");
   }
 })

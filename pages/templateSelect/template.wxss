@@ -66,10 +66,22 @@
   height: 128rpx;
   line-height: 128rpx;
   position: relative;
+  box-shadow: 0rpx -10rpx 50rpx 5rpx rgba(0, 0, 0, 0.8);
 }
 
 .tps_text_btn {
   vertical-align: middle;
+}
+.tps_text_btn_pressed::after{
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  left: 0;
+  top: 0;
+  display: inline-block;
+  border-radius: 0;
+  vertical-align: middle;
+  background-color: rgba(255, 255, 255, 0.5);
 }
 
 .tps_content_double_item_container {
