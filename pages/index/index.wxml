@@ -41,6 +41,7 @@
     <image src='../images/refresh.png' mode='aspectFit' class='refresh'></image>
     <text class='refresh-text'>换一批</text>
   </view>
-
-  <button class='button-create' hover-class='button-click' bindtap='createPhoto'>制作词云头像</button>
+<form class='button-create'  bindsubmit="createPhoto" report-submit='true' >
+  <button  hover-class='button-click' size='big' form-type='submit'>制作词云头像</button>
+  </form>
 </view>

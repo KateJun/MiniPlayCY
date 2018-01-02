@@ -1,61 +1,20 @@
-var Promise = require('../utils/es6-promise.js')
-//异步代理
-function wxPromisify(fn) {
-  return function (obj = {}) {
-    return new Promise((resolve, reject) => {
-      obj.success = function (res) {
-        resolve(res)
-      }
-      obj.fail = function (res) {
-        reject(res)
-      }
-      fn(obj)
-    })
-  }
-}
-//无论promise对象最后状态如何都会执行
-Promise.prototype.finally = function (callback) {
-  let P = this.constructor;
-  return this.then(
-    value => P.resolve(callback()).then(() => value),
-    reason => P.resolve(callback()).then(() => { throw reason })
-  );
-};
 
-/**
- * 微信用户登录,获取code
- */
-function wxLogin() {
-  return wxPromisify(wx.login)
-}
-/**
- * 获取微信用户信息
- * 注意:须在登录之后调用
- */
-function wxGetUserInfo() {
-  return wxPromisify(wx.getUserInfo)
-}
-/**
- * 获取系统信息
- */
-function wxGetSystemInfo() {
-  return wxPromisify(wx.getSystemInfo)
-}
+var baseUrl = 'http://172.19.11.51:8080/word_image'
+// var baseUrl = 'https://wnews.mjmobi.com/word_image'///cal24/play'
 
-// var baseUrl = 'http://172.19.11.51:8080'
-var baseUrl = 'https://wnews.mjmobi.com'///cal24/play'
+var openIdUrl = baseUrl + '/get_openid'   //get
 
-var openIdUrl = baseUrl + '/cal24/get_openid'   //get
+var updateUserUrl = baseUrl + '/update_user_info' //post
 
-var updateUserUrl = baseUrl + '/cal24/update_user_info' //post
+var imageTaskUrl = baseUrl + '/image_task'  //post
 
-var playUrl = baseUrl + '/cal24/play'  //post
+var getImagerUrl = baseUrl + '/get_image' //get
 
-var roomByOwnerUrl = baseUrl + '/cal24/get_room_by_owner' //get
+var getTextUrl = baseUrl + '/get_text' //get
 
-var rankUrl = baseUrl + '/cal24/get_rank' //get
+var getMaskUrl = baseUrl + '/get_mask' //get
 
-var shareUrl = baseUrl + '/cal24/share' //get
+var shareUrl = baseUrl + '/share' //get
 
 /**
  * 
@@ -64,10 +23,8 @@ var shareUrl = baseUrl + '/cal24/share' //get
  * resp: openid, session_code, errcode, errmsg
  */
 function getOpenId(param, succes, fail) {
-  // return new Promise(function (reslove, reject){
   _getWithParam(openIdUrl, param, succes, fail)
-  // })
-  // _get(url , succes, fail)
+
 }
 
 /**
@@ -79,34 +36,37 @@ function update_user_info(data, success, fail) {
 }
 
 /**
- * req: openid, session_code
- * resp: {room_id, ranks: [{nick_name, openid, avatar_url, score}]}
+req: openid, session_code, mask, font, colors, text
+resp: errcode, errmsg, image_id
  * 
  */
-function get_owned_play_room(param, success, fail) {
-  
-  _getWithParam(roomByOwnerUrl, param, success, fail)
+function image_task(param, success, fail) {
+  _getWithParam(imageTaskUrl, param, success, fail)
 }
 
 /**
  * 
- * req: {openid, session_code, score, room_id}
- * resp: {errcode, room_rank, global_rank, rank_percent, new_high_score}
+req: openid, session_code, task_id
+resp: errcode, errmsg, image_url
  */
-function play24(data, success, fail) {
-  _post(playUrl, data, success, fail)
+function get_image(data, success, fail) {
+  _post(getImagerUrl, data, success, fail)
 }
 
 /**
- * req: room_id openid
- * resp: {
-       user_rank: {room_rank, global_rank, rank_percent},
-       room_rank: [{openid, nick_name, avatar_url, score}],
-       global_rank: [{openid, nick_name, avatar_url, score}]
-      }
+req: none
+resp: {text: {tag: [{id, text}]}}
  */
-function getRank(param, success, fail) {
-  _getWithParam(rankUrl, param, success, fail)
+function get_text(param, success, fail) {
+  _getWithParam(getTextUrl, param, success, fail)
+}
+
+/**
+ * req: none
+resp: {masks: [{id, name, url}]}
+ */
+function get_mask(param, success, fail) {
+  _getWithParam(getMaskUrl, param, success, fail)
 }
 
 /**
@@ -118,7 +78,7 @@ function share(openid) {
     openid: openid
   }
   _getWithParam(shareUrl, param, function (s) {
-    console.log("分享成功")
+    console.log("分享上报成功")
   }, function (f) { })
 }
 
@@ -152,7 +112,7 @@ function _get(url, s, f) {
 }
 
 function _getWithParam(url, data, s, f) {
-  console.log(url, data,"------start---_get----");
+  console.log(url, data, "------start---_get----");
   wx.request({
     url: url,
     header: {
@@ -182,14 +142,14 @@ function _getWithParam(url, data, s, f) {
  * fail 失败的回调
  */
 function _post(url, data, s, f) {
-  console.log(url, data,"----_post--start-------");
+  console.log(url, data, "----_post--start-------");
   wx.request({
     url: url,
     header: {
       'content-type': 'application/json',
     },
     method: 'POST',
-    data:  data ,
+    data: data,
     success: function (res) {
       console.log("data", res.data)
       if (res.statusCode == 200) {
@@ -210,13 +170,13 @@ module.exports = {
   getOpenId: getOpenId,
   updateUser: update_user_info,
   share: share,
-  getRank: getRank,
-  play24: play24,
-  roomById: get_owned_play_room,
-  updateUser: update_user_info,
+  getMask: get_mask,
+  getLabel: get_text,
+  getImage: get_image,
+  imageTask: image_task,
 
-  wxPromisify: wxPromisify,
-  wxLogin: wxLogin,
-  wxGetUserInfo: wxGetUserInfo,
-  wxGetSystemInfo: wxGetSystemInfo
+  // wxPromisify: wxPromisify,
+  // wxLogin: wxLogin,
+  // wxGetUserInfo: wxGetUserInfo,
+  // wxGetSystemInfo: wxGetSystemInfo
 }

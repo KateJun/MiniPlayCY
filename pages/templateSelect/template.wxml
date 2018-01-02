@@ -1,8 +1,9 @@
 <!--pages/templateSelect/template.wxml-->
 <import src="../templates/tp_progress.wxml" />
+<include src="../index/bg.wxml" />
 <form class='form' bindsubmit='submit'>
   <view class='tps_container'>
-    <image src='../images/bg.png' class='tps_bg'></image>
+    <!-- <image src='../images/bg.jpg' class='tps_bg'></image> -->
     <scroll-view scroll-y='true' class='tps_content flex_auto' style='height:{{contentHeight}}px;'>
       <radio-group bindchange='selectedChanged'>
         <block wx:for='{{templates}}' wx:for-item='templateDouble' wx:key="templateDouble[0].key" wx:for-index='i'>

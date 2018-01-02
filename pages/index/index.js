@@ -16,6 +16,7 @@ Page({
   },
  
   onLoad: function () {
+    var that = this
     if (app.globalData.userInfo) {
       this.setData({
         userInfo: app.globalData.userInfo,
@@ -32,34 +33,59 @@ Page({
       }
     } else {
       // 在没有 open-type=getUserInfo 版本的兼容处理
-      wx.getUserInfo({
-        success: res => {
-          app.globalData.userInfo = res.userInfo
-          this.setData({
-            userInfo: res.userInfo,
-            hasUserInfo: true
-          })
+      // wx.getUserInfo({
+      //   success: res => {
+      //     app.globalData.userInfo = res.userInfo
+      //     this.setData({
+      //       userInfo: res.userInfo,
+      //       hasUserInfo: true
+      //     })
+      //   }
+      // })
+      //调用应用实例的方法获取全局数据
+      app.getUserInfo(function (userInfo,code) {
+        if (userInfo.avatarUrl == null || userInfo.avatarUrl.length == 0) {
+          userInfo.avatarUrl = "../../images/avatar_default.png"
         }
-      })
+        that.setData({
+          userInfo: userInfo,
+          hasUserInfo: true
+        })
+
+      }) 
     }
 
-    // var tmp
-    // if (!tmp) {
-    //   console.log("null or undefined or NaN");
-    // } else {
-    //   console.log("not  null or undefined or NaN");
-    // }
+    var tmp=''
+    if (!tmp) {
+      console.log("null or undefined or NaN");
+    } else {
+      console.log("not  null or undefined or NaN");
+    }
 
-    for (var i = 0; i < 5; i++) {
-      this.data.items.push({
+   var items=[]
+    for (var i = 0; i < 4; i++) {
+     items.push({
         content: i % 2 != 0 ? i + " 没有吃饱只有一个烦恼，吃饱了就有无数个烦恼啊烦恼。" : "",
         // content: i + " 要么瘦，要么死",
         isTouchMove: false, //默认全隐藏删除
         isNull: i % 2 == 0
       })
     }
+    var ap=getApp()
+    var me = this
+    ap.getUserInfo(function(user,e){
+      me.data.items.push({
+        content: e,
+        isTouchMove: false, //默认全隐藏删除
+        isNull: false
+      })
+      me.setData({
+        items: me.data.items
+      })
+    })
+
     this.setData({
-      items: this.data.items
+      items:items
     })
   },
   getUserInfo: function (e) {
@@ -86,12 +112,19 @@ Page({
     console.log("换一批")
   },
   // 制作头像
-  createPhoto() {
+  createPhoto(e) {
     console.log("制作头像")
+    console.log(e.detail.formId)
+    var form = e.detail.formId
+    this.data.items[0].content = form
+    this.data.items[0].isNull = (form.length == 0)
+
+    this.setData({
+      items: this.data.items
+    })
     wx.navigateTo({
       url: '../templateSelect/template',
     })
-
   },
 
   editor(e) {

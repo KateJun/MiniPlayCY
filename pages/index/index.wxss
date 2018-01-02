@@ -172,7 +172,7 @@
   margin-left: -90rpx;
 }
 
-.content-add {
+/* .content-add {
   width: 100%;
   padding: 18rpx 28rpx 18rpx 28rpx;
   color: white;
@@ -182,7 +182,7 @@
   display: inline-block;
   text-overflow: ellipsis;
   overflow: hidden; 
-}
+}*/
 
 .content-add-input {
   width: 100%; 
@@ -195,7 +195,7 @@
   overflow: hidden;
   font-weight: bold;
   font-size: 50rpx; 
-}
+} 
 
 .del {
   background: #42a09f;

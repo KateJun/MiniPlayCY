@@ -11,3 +11,14 @@
     </view>
   </radio-group>
 </view>
+
+<!-- <view class='progress_container'>
+      <view class='tp_progress_cover' style='display:{{progress.isLoading ? "flex" : "none"}}'>
+    <image src='../images/cover.png' class='tp_progress_cover_bg'></image>
+    <view class='tp_progress_container'>
+      <image class='tp_progress_bg' src='../images/progress_bg.png' style='width:800rpx'></image>
+      <image class='tp_progress_progress' src='../images/progress.png' mode="scaleToFill" style='width:800rpx;margin-left:-450rpx;' animation="{{animationT}}"></image>
+    </view>
+    <text class='tp_progress_text'>正在很努力地生成图像中...</text>
+  </view>
+</view> -->
