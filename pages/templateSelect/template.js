@@ -13,10 +13,7 @@ Page({
     contentHeight: 0,
     pixelRatio: 0,
     selectedOne: {},//被选中对象
-    progress: {
-      isLoading: false,//是否显示加载框
-      progress: 0//进度
-    }
+    
   },
   selectedChanged: function (e) {
     // console.log(e.detail.value);
@@ -38,17 +35,11 @@ Page({
     }
   },
 
-  showLoading:function(){
-    wx.setNavigationBarColor({
-      backgroundColor: "#1D3F57",
-      frontColor:"#ffffff"
-    });
-    var changed = {};
-    changed['progress.isLoading'] = true;
-    this.setData(changed);
-  },
+  
   submit: function(e){
-    this.showLoading();
+    wx.navigateTo({
+      url: '../result/result?data=',
+    })
   },
   /**
    * 生命周期函数--监听页面加载

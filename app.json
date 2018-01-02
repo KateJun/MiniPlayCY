@@ -3,6 +3,7 @@
     "pages/index/index",
     "pages/mine/mine",
     "pages/templateSelect/template",
+    "pages/result/result",
     "pages/logs/logs"
   ],
   "window": {
