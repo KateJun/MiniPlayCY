@@ -66,7 +66,7 @@
   height: 128rpx;
   line-height: 128rpx;
   position: relative;
-  box-shadow: 0rpx -10rpx 50rpx 5rpx rgba(0, 0, 0, 0.8);
+  box-shadow: 0rpx -10rpx 50rpx 5rpx rgba(0, 0, 0, 0.2);
 }
 
 .tps_text_btn {

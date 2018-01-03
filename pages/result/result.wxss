@@ -36,12 +36,6 @@
   left: 0;
 }
 
-.result_bottom_bg {
-  height: 100%;
-  width: 100%;
-  position: absolute;
-}
-
 .result_btn_container {
   width: 0;
   display: inline-flex;

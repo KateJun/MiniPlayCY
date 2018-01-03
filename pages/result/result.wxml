@@ -7,7 +7,7 @@
   <canvas class='result_canvas_pic' canvas-id='{{CANVAS_PIC}}'></canvas>
   <canvas class='result_canvas_palette' canvas-id='{{CANVAS_PALETTE}}' bindtouchstart='touchPaletteStart' bindtouchend='touchPalletteEnd'></canvas>
   <view class='result_bottom_container'>
-    <image src='../images/bg_bottom.jpg' class='result_bottom_bg'></image>
+    <image src='../images/bg_bottom.jpg' class='bottom_bg'></image>
     <block wx:for="{{buttons}}">
       <view class='result_btn_container' >
         <image src='{{item.img}}' class='result_btn_img'></image>
