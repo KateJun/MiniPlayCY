@@ -56,6 +56,8 @@ Page({
     } catch (e) {
       // Do something when catch error
     }
+    var masks = JSON.parse(options.masks)
+    console.log("onload" , masks)
   },
 
   /**

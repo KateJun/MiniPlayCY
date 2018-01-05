@@ -29,8 +29,8 @@ App({
 
   getUserInfo: function (cb) {
     var that = this
-    if (that.globalData.userInfo && that.globalData.openid  && that.globalData.session) {
-      typeof cb == "function" && cb(that.globalData.userInfo,null)
+    if (that.globalData.userInfo && that.globalData.openid && that.globalData.session) {
+      typeof cb == "function" && cb(that.globalData.userInfo, null)
       that.updateInfo(that, null)
     } else {
       that.login(cb)
@@ -45,59 +45,53 @@ App({
         // 发送 res.code 到后台换取 openId, sessionKey, unionId
         console.log("login code:", res.code)
         that.globalData.loginCode = res.code
-        typeof (cb) == "function" && cb(null,res.code)
         // 获取用户信息
-        wx.getSetting({
+        wx.getUserInfo({
+          withCredentials: false,
           success: res => {
-            if (res.authSetting['scope.userInfo']) {
-              // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
-              wx.getUserInfo({
-                withCredentials: false,
-                success: res => {
-                  // 可以将 res 发送给后台解码出 unionId
-                  that.globalData.userInfo = res.userInfo
-                  // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
-                  // 所以此处加入 callback 以防止这种情况
-                  if (that.userInfoReadyCallback) {
-                    that.userInfoReadyCallback(res)
-                  }
-                  that.updateInfo(that, null)
-                }
-              })
+            // 可以将 res 发送给后台解码出 unionId
+            that.globalData.userInfo = res.userInfo
+            // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
+            // 所以此处加入 callback 以防止这种情况
+            if (that.userInfoReadyCallback) {
+              that.userInfoReadyCallback(res)
             }
+            that.updateInfo(that, null)
+          },
+          fail: (res) => {
+            wx.showModal({
+              title: '用户未授权',
+              content: "为了正常使用游戏评测功能，请按确认并在授权管理中选中'用户信息'开启",
+              showCancel: false,
+              confirmText: '确认',
+              cancelText: '取消',
+              success: function (res) {
+                if (res.confirm) {
+                  wx.openSetting({
+                    success: function (res) {
+                      console.log(res)
+                      that.getUserInfo(cb);
+                    },
+                    fail: function () {
+                      that.getUserInfo(cb);
+                    }
+                  })
+                }
+              }
+            })
           }
         })
+
         that.updateInfo(that, res.code)
       },
-      fail: (res) => {
-        wx.showModal({
-          title: '用户未授权',
-          content: "为了正常使用游戏评测功能，请按确认并在授权管理中选中'用户信息'开启",
-          showCancel: false,
-          confirmText: '确认',
-          cancelText: '取消',
-          success: function (res) {
-            if (res.confirm) {
-              wx.openSetting({
-                success: function (res) {
-                  console.log(res)
-                  getApp().getUserInfo(cb);
-                },
-                fail: function () {
-                  getApp().getUserInfo(cb);
-                }
-              })
-            }
-          }
-        })
-      }
-    }) 
+
+    })
   },
 
   updateInfo(that, code) {
     var openid = that.globalData.openid
-    var session = that.globalData.session 
-    if (openid == '0' || session == '0' || !openid || !session ){
+    var session = that.globalData.session
+    if (openid == '0' || session == '0' || !openid || !session) {
       var appid = 'wxfcb7146d74c576c8' //微信小程序appid  
       var secret = 'e5b71e88758204bec36e388f40c828c7'//微信小程序secret  
       //调用request请求api转换登录凭证  
@@ -109,11 +103,11 @@ App({
       req.getOpenId(
         param,
         function (s) {
-           openid = s.openid
-           session = s.session
+          openid = s.openid
+          session = s.session
           that.globalData.openid = openid
           that.globalData.session = session
- 
+
           // 存储id、session
           wx.setStorage({
             key: 'openid',
@@ -167,6 +161,7 @@ App({
     userInfo: null,
     loginCode: null,
     openid: '',
-    session: ''
+    session: '',
+    hasUpdate: false
   }
 })

@@ -1,15 +1,17 @@
 <!--pages/mine/mine.wxml-->
 <include src="../index/bg.wxml" />
 <include src="empty.wxml"/>
-<view style='position:fixed;width:100%'>   
+<view class='label-container'>   
+  <!-- <scroll-view class="scroll-view_H" scroll-x="{{true}}" scroll-y="{{false}}" scroll-with-animation="{{true}}" scroll-into-view="{{'ti'+currPage}}"> -->
   <radio-group bindchange="tabClick" class="flex_box">
     <view class="flex_item">
-      <label class="{{currentPage == item.id?'active':''}}" wx:for="{{labels}}" wx:key="key">
+      <label class="{{currentPage == item.id?'active':''}}" wx:for="{{labels}}" wx:key="key" id="{{'ti'+index}} ">
         {{item.name }}
         <radio value="{{item.id}}" hidden="true" checked="{{item.checked}}"></radio>
       </label>
     </view>
   </radio-group>
+  <!-- </scroll-view> -->
 </view>
 
 <!-- <view class='progress_container'>

@@ -11,15 +11,16 @@
 
   <image src='../images/logo.png' class='logo' mode='aspectFit'></image>
 
-
-  <radio-group bindchange="tabClick" class="flex_box">
-    <view class="flex_item">
-      <label class="{{currentPage == item.id?'active':''}}" wx:for="{{labels}}" wx:key="key">
-        {{item.name }}
-        <radio value="{{item.id}}" hidden="true" checked="{{item.checked}}"></radio>
-      </label>
-    </view>
-  </radio-group>
+  <!-- <scroll-view class="scroll-view_H" scroll-x="{{true}}" scroll-y="{{false}}" scroll-with-animation="{{true}}" scroll-into-view="{{'ti'+currPage}}"> -->
+    <radio-group bindchange="tabClick" class="flex_box">
+      <view class="flex_item">
+        <label class="{{currentPage == item.id?'active':''}}" wx:for="{{labels}}" wx:key="key" id="{{'ti'+index}}">
+          {{item.name }}
+          <radio value="{{item.id}}" hidden="true" checked="{{item.checked}}"></radio>
+        </label>
+      </view>
+    </radio-group>
+  <!-- </scroll-view> -->
 
   <view class='label-content-box'>
     <view class="touch-item {{item.isTouchMove ? 'touch-move-active' : ''}}" data-index="{{index}}" bindtouchstart="touchstart" bindtouchmove="touchmove" wx:for="{{items}}" wx:key="">
@@ -29,10 +30,10 @@
         </view>
       </block>
       <block wx:else> -->
-        <view class="content">
-          <input class="content-input" data-id='{{index}}' placeholder-class='content-add-input'    placeholder="+"  bindinput='editor' focus='{{false}}' value='{{item.content}}' type='text'></input>
-        </view>
-        <view class="del" catchtap="del" data-index="{{index}}">删除</view>
+      <view class="content">
+        <input class="content-input" data-id='{{index}}' placeholder-class='content-add-input' placeholder="+" bindinput='editor' focus='{{false}}' value='{{item.content}}' type='text'></input>
+      </view>
+      <view class="del" catchtap="del" data-index="{{index}}">删除</view>
       <!-- </block> -->
     </view>
   </view>
@@ -41,7 +42,7 @@
     <image src='../images/refresh.png' mode='aspectFit' class='refresh'></image>
     <text class='refresh-text'>换一批</text>
   </view>
-<form class='button-create'  bindsubmit="createPhoto" report-submit='true' >
-  <button  hover-class='button-click' size='big' form-type='submit'>制作词云头像</button>
+  <form class='button-create' bindsubmit="createPhoto" report-submit='true'>
+    <button hover-class='button-click' size='big' form-type='submit'>制作词云头像</button>
   </form>
 </view>

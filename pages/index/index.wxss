@@ -27,11 +27,20 @@
   margin-bottom: 60rpx;
 }
 
-.flex_box {
+.scroll-view_H{
+  width: 100%;
+  white-space: nowrap;
   margin-bottom: 50rpx;
+ 
+}
+
+.flex_box {
+     margin-bottom: 50rpx;   
   width: 100%;
   background: transparent;
   height: 64rpx;
+  padding-left: 60rpx;
+  padding-right: 60rpx;
 }
 
 .flex_item {
@@ -42,10 +51,11 @@
   justify-content: center;
   flex-direction: row;
   display: flex;
+ 
 }
 
 .flex_item label {
-  line-height: 62rpx;
+  line-height: 60rpx;
   margin-left: 20rpx;
   margin-right: 20rpx;
   display: inline-block;

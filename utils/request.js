@@ -1,6 +1,7 @@
+var ip = "http://172.19.11.56:8080"
 
-var baseUrl = 'http://172.19.11.51:8080/word_image'
-// var baseUrl = 'https://wnews.mjmobi.com/word_image'///cal24/play'
+var baseUrl = ip+'/word_image'
+// var baseUrl = 'https://wnews.mjmobi.com/word_image'
 
 var openIdUrl = baseUrl + '/get_openid'   //get
 
@@ -10,9 +11,7 @@ var imageTaskUrl = baseUrl + '/image_task'  //post
 
 var getImagerUrl = baseUrl + '/get_image' //get
 
-var getTextUrl = baseUrl + '/get_text' //get
-
-var getMaskUrl = baseUrl + '/get_mask' //get
+var getSettingUrl = baseUrl + '/get_settings' //get
 
 var shareUrl = baseUrl + '/share' //get
 
@@ -41,13 +40,13 @@ resp: errcode, errmsg, image_id
  * 
  */
 function image_task(param, success, fail) {
-  _getWithParam(imageTaskUrl, param, success, fail)
+  _post(imageTaskUrl, param, success, fail)
 }
 
 /**
  * 
 req: openid, session_code, task_id
-resp: errcode, errmsg, image_url
+resp: errcode, errmsg,  
  */
 function get_image(data, success, fail) {
   _post(getImagerUrl, data, success, fail)
@@ -55,19 +54,34 @@ function get_image(data, success, fail) {
 
 /**
 req: none
-resp: {text: {tag: [{id, text}]}}
- */
-function get_text(param, success, fail) {
-  _getWithParam(getTextUrl, param, success, fail)
+resp: {text: {tag: [{id, text}]},masks: [{id, name, url}]}
+eg:
+{
+  "mask": [
+    {
+      "id": 1,
+      "name": "alice",
+      "url": "/static/masks/alice.png"
+    }
+  ],
+  "text": [
+    {
+      "id": 1,
+      "tag": "减肥",
+      "text":["如果连自己的体重都控制不了何以控制自己的人生",  "吃饱有力气减肥","123"]
+    },
+    {
+      "id": 2,
+      "tag": "热词",
+      "text":["人生", "吃饱有力气减肥"]
+    }
+  ]
 }
-
-/**
- * req: none
-resp: {masks: [{id, name, url}]}
  */
-function get_mask(param, success, fail) {
-  _getWithParam(getMaskUrl, param, success, fail)
+function get_setting( success, fail) {
+  _get(getSettingUrl, success, fail)
 }
+ 
 
 /**
  * req: {openid}
@@ -80,6 +94,10 @@ function share(openid) {
   _getWithParam(shareUrl, param, function (s) {
     console.log("分享上报成功")
   }, function (f) { })
+}
+
+function getImageUrl(name){
+  return ip + name
 }
 
 /**
@@ -170,10 +188,10 @@ module.exports = {
   getOpenId: getOpenId,
   updateUser: update_user_info,
   share: share,
-  getMask: get_mask,
-  getLabel: get_text,
+  getCYSetting: get_setting,
   getImage: get_image,
   imageTask: image_task,
+  getImageUrl:getImageUrl
 
   // wxPromisify: wxPromisify,
   // wxLogin: wxLogin,
