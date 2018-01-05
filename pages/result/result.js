@@ -21,9 +21,9 @@ Page({
       name: '分享',
       img: '../images/share.png',
     }],
-    touchStartPosition: -1,
-    selectedColorPosition: -1,//选中的颜色
-    selectedColorValue: '',//选中的色值
+    maxColorCount: 3,
+    touchStartItems: [],
+    selectedColors: [],//被选中的颜色
     //canvas相关
     screenWH: [],
     baseWidth: 750,
@@ -48,7 +48,7 @@ Page({
       itemRadius: 45,//每个色值的半径
       colorList: [["#3fe2e2", "#5252f9", "#f1e599", "#3cc781", "#000000"], ["#e7477f", "#f03fe1", "#aae987", "#9966cc", "#64d9f6"], ["#fccf4d", "#ff6f3c", "#00a0ff", "#dffcb5", "#ffcef3"]],
       colorTouchXYList: [],//所有颜色的点击xy范围,数组4个变量，x1,x2,y1,y2，1<2
-      allColorList:[],//所有色值合并的数组
+      allColorList: [],//所有色值合并的数组
       itemMargin: 20,//每个色值互相的间距
       height: 348,//整个调色板的高度
       selectedCircleColor: "#08ffa1"//选中效果颜色
@@ -58,14 +58,11 @@ Page({
     CANVAS_PALETTE: 'canvas_palette',
 
   },
-  save:function(e){
-
+  save: function (e) {
+    console.log("保存被点击");
   },
-  download:function(e){
-
-  },
-  share:function(e){
-
+  download: function (e) {
+    console.log("下载被点击");
   },
   getScreenWH: function () {
     try {
@@ -179,7 +176,14 @@ Page({
     canvas.drawImage(imgUrl, x, y, w, h);
 
     canvas.restore();
+
+    this.drawQRCode(canvas);
+
     canvas.draw();
+  },
+
+  drawQRCode: function (canvas) {
+
   },
 
   drawPalette: function () {
@@ -220,7 +224,7 @@ Page({
       touchList = [];
       data.colorTouchXYList = touchList;
     }
-    if (!data.allColorList || data.allColorList.length < 1){
+    if (!data.allColorList || data.allColorList.length < 1) {
       allColorList = [];
       data.allColorList = allColorList;
     }
@@ -244,10 +248,11 @@ Page({
           touch.push(y - radius - itemMargin);
           touch.push(y + radius + itemMargin);
         }
-        if (allColorList){
+        if (allColorList) {
           allColorList.push(color);
         }
-        if (position == this.data.selectedColorPosition) {
+        
+        if (this.getSelectedColorPosition(position) > -1) {
           canvas.beginPath();
           canvas.arc(x, y, radius, 0, 2 * Math.PI);
           canvas.setStrokeStyle(data.selectedCircleColor);
@@ -260,13 +265,25 @@ Page({
     }
     canvas.restore();
   },
+  getSelectedColorPosition:function(position){
+    for (var i = 0; i < this.data.selectedColors.length; i++){
+      if (this.data.selectedColors[i].position == position){
+        return i;
+      }
+    }
+    return -1;
+  },
   touchPaletteStart: function (res) {
     console.log('调色板点击开始');
     var t = res.changedTouches[0];
     var x = t.x;
     var y = t.y;
     var id = t.identifier;
-    this.data.touchStartPosition = this.getTouchPalletteColor(x, y).position;
+    var that = this;
+    this.data.touchStartItems.push({
+      id: id,
+      position: that.getTouchPalletteColor(x, y).position
+    });
   },
   touchPalletteEnd: function (res) {
     console.log('调色板点击结束');
@@ -274,8 +291,16 @@ Page({
     var x = t.x;
     var y = t.y;
     var id = t.identifier;
-    if (this.data.touchStartPosition > -1) {
-      this.checkTouchPallette(x, y);
+    if (this.data.touchStartItems.length > -1) {
+      for (var i = 0; i < this.data.touchStartItems.length; i++) {
+        var touch = this.data.touchStartItems[i];
+        if (touch.id == id) {
+          this.checkTouchPallette(x, y, touch.position);
+          this.data.touchStartItems.splice(i, 1);
+          break;
+        }
+      }
+
     }
   },
   getTouchPalletteColor: function (x, y) {
@@ -285,31 +310,38 @@ Page({
       var touchXY = touchXYList[i];
       if (x >= touchXY[0] && x <= touchXY[1] && y >= touchXY[2] && y <= touchXY[3]) {
         console.log("第" + i + "项颜色被触摸");
-        return { position: i, color: allColorList[i]};
+        return { position: i, color: allColorList[i] };
       }
     }
-    return {position: -1, color:''};
+    return { position: -1, color: '' };
   },
-  checkTouchPallette: function (finalX, finalY) {
+  checkTouchPallette: function (finalX, finalY, position) {
 
-    var newColor = this.getTouchPalletteColor(finalX, finalY);
-    var newPosition = newColor.position;
-    if (newPosition < 0 || newPosition != this.data.touchStartPosition) {
+    var newColorItem = this.getTouchPalletteColor(finalX, finalY);
+    var newPosition = newColorItem.position;
+    var newColorValue = newColorItem.color;
+    if (newPosition < 0 || newPosition != position) {
       //触摸开始和结束非同一个颜色，此次点击无效
-      this.data.touchStartPosition = -1;
       return;
     }
-    
-    if (newPosition == this.data.selectedColorPosition) {//取消选中
-      this.data.selectedColorPosition = -1;
-      this.data.selectedColorValue = '';
+    var selectedPosition = this.getSelectedColorPosition(newPosition);
+    if (selectedPosition > -1) {//取消选中
+      this.data.selectedColors.splice(selectedPosition, 1);
       console.log("第" + newPosition + "项颜色取消选中");
-    } else {//选中另一个
-      this.data.selectedColorPosition = newPosition;
-      this.data.selectedColorValue = newColor.color;
-      console.log("第" + newPosition + "项颜色被选中");
+    } else {//选中新的
+      if (this.data.selectedColors.length < this.data.maxColorCount) {
+        this.data.selectedColors.push({
+          position: newPosition,
+          color: newColorValue
+        });
+        console.log("第" + newPosition + "项颜色被选中");
+      } else {
+        console.log("第" + newPosition + "项颜色被选中，但已选满");
+        wx.showToast({
+          title: '已选满' + this.data.selectedColors.length + '种'
+        });
+      }
     }
-    this.data.touchStartPosition = -1;
     this.drawPalette();
   },
   scale: function (x) {
@@ -370,7 +402,7 @@ Page({
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
-
+  onShareAppMessage: function (e) {
+    console.log("分享被触发");
   }
 })

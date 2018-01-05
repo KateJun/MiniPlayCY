@@ -36,12 +36,6 @@
   left: 0;
 }
 
-.result_bottom_bg {
-  height: 100%;
-  width: 100%;
-  position: absolute;
-}
-
 .result_btn_container {
   width: 0;
   display: inline-flex;
@@ -74,8 +68,8 @@
 .result_btn_checked::after {
   content: "";
   position: absolute;
-  width: 100%p;
-  height: 100%p;
+  width: 200%;
+  height: 200%;
   left: 0;
   top: 0;
   display: inline-block;
