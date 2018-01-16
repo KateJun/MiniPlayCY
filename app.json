@@ -1,10 +1,10 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/logs/logs",
     "pages/mine/mine",
     "pages/templateSelect/template",
-    "pages/result/result",
-    "pages/logs/logs"
+    "pages/result/result"
   ],
   "window": {
     "backgroundTextStyle": "light",

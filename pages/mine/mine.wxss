@@ -1,7 +1,10 @@
 /* pages/mine/mine.wxss */
 @import "../index/index.wxss";
-.flex_box{
-  padding-top: 60rpx; 
+@import "../templateSelect/template.wxss";
+
+.flex_box {
+  padding-top: 60rpx;
+    padding-left: 0;
 }
 
 .icon_empty {
@@ -26,9 +29,15 @@
   flex-direction: column;
 } */
 
-.label-container{
+.label-container {
   position: fixed;
   width: 100%;
   align-items: center;
-  margin-left: -60rpx;
+  /* margin-left: -60rpx; */
 }
+ 
+
+.tps_content_item_last {
+  margin-bottom: 200rpx;
+}
+ 

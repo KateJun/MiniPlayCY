@@ -1,4 +1,4 @@
-<view class="container">
+<view class="container" hidden="{{noHistory}}">
   <image src="../images/icon-empty.png" class="icon_empty" mode="aspectFit"></image>
 
   <text  class='text_empty'>这么好玩，你确定不玩吗？</text>

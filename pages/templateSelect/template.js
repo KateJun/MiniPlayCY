@@ -1,4 +1,5 @@
 // pages/templateSelect/template.js
+var req = require( "../../utils/request.js");
 Page({
 
   /**
@@ -13,19 +14,23 @@ Page({
     contentHeight: 0,
     pixelRatio: 0,
     selectedOne: {},//被选中对象
-    
+    text_id:0,
+    text:'',
+    mask_id:0
   },
   selectedChanged: function (e) {
     // console.log(e.detail.value);
     for (var i = 0; i < this.data.templates.length; i++) {
-      var tps = this.data.templates[i];
+      var tps = this.data.templates[i]; 
       for (var j = 0; j < tps.length; j++) {
         var item = tps[j];
         if (item.id == e.detail.value) {//设置选中样式
           var changed = {};
           changed['templates[' + i + '][' + j + '].isChecked'] = true;
           this.setData(changed);
-          this.data.selectedOne = item;
+          this.setData({
+            selectedOne : item
+          })
         } else if (item.isChecked) {//去除选中样式
           var changed = {};
           changed['templates[' + i + '][' + j + '].isChecked'] = false;
@@ -37,8 +42,9 @@ Page({
 
   
   submit: function(e){
+    var me = this
     wx.navigateTo({
-      url: '../result/result?data=',
+      url: '../result/result?text=' + this.data.text + "&mask_id=" + me.data.selectedOne.id + "&text_id=" + me.data.text_id + "&mask=" + me.data.selectedOne.img+"&tag="+me.data.tag,
     })
   },
   /**
@@ -56,50 +62,44 @@ Page({
     } catch (e) {
       // Do something when catch error
     }
-    var masks = JSON.parse(options.masks)
-    console.log("onload" , masks)
-  },
+    var arr = JSON.parse(options.masks)
+    var masks = []
+    masks.push(arr[0])
+    // masks.push(arr[0])
+    // masks.push(arr[0])
+    
+    var text_id = options.text_id
+    var text = options.text
+    var tag = options.tag
+    var group=[]
+    let imageSize = masks.length
+    if (imageSize > 0) {
+      let ll = Math.floor(imageSize >= 2 && imageSize % 2 == 0 ? imageSize / 2 : imageSize / 2 + 1)
+      for (let j = 0; j < ll; j++) {
+        group.push([])
+      }
+      for (let i = 0; i < imageSize; i++) {
+        var tmp = masks[i]
+        group[Math.floor(i / 2)].push({
+          // id: i,
+          id: tmp.id,
+          name: tmp.name,
+          img: req.url + tmp.url,
+          key: tmp.name,
+          isChecked: i==0,
+          localPath:''
+        })
+      }
 
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-
+      this.setData({
+        templates:group,
+        text:text,
+        text_id:text_id,
+        tag:tag,
+        selectedOne:group[0][0]
+      })
+    }
+    console.log("onload" ,text_id,text, group,arr,masks)
   },
 
   /**

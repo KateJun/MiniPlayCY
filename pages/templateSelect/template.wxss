@@ -52,6 +52,7 @@
   border-color: white;
   text-align: center;
   line-height: 80rpx;
+  text-shadow: 2rpx 2rpx 5rpx #6d6a9d;
 }
 
 .tps_content {
@@ -72,16 +73,18 @@
 .tps_text_btn {
   vertical-align: middle;
 }
-.tps_text_btn_pressed::after{
+
+.tps_text_btn_pressed::after {
   position: absolute;
   width: 200%;
   height: 200%;
   left: 0;
   top: 0;
   display: inline-block;
-  border-radius: 0;
+  border-radius: 40rpx;
   vertical-align: middle;
   background-color: rgba(255, 255, 255, 0.5);
+  opacity: 0.8;
 }
 
 .tps_content_double_item_container {
@@ -121,8 +124,3 @@
   width: 100%;
   height: 100%;
 }
-
-
-
-
-

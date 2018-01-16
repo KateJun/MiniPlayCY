@@ -2,51 +2,29 @@
 //获取应用实例
 const app = getApp()
 var req = require("../../utils/request.js")
+const defLabels = [{ lid: -1, name: "减肥", id: "r0", checked: "true" }, { lid: -2, name: "热词", id: "r1" }, { lid: -3, name: "励志", id: "r2" }, { lid: -4, name: "个性", id: "r3" }]// { name: "个性", id: "r6" }, { name: "个性", id: "r4" }],
 Page({
   data: {
     motto: 'Hello World',
     userInfo: {},
     hasUserInfo: false,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
-    labels: [{ name: "热词", id: "r0", checked: "true" }, { name: "减肥", id: "r1" }, { name: "励志", id: "r2" }, { name: "个性", id: "r3" }],// { name: "个性", id: "r6" }, { name: "个性", id: "r4" }],
-    currentPage: "r0",
+    labels: defLabels,
+    currentPage: { id: "r0", name: "减肥" },
     items: [],
     startX: 0, //开始坐标
     startY: 0,
-    currPage: 0,
+    // currPage: 0,
     masks: [],
     allItems: [],
-    curID: 0
+    curTag: 0,
+    text_id: 1,
+    text: ''
   },
 
   onLoad: function () {
     var that = this
-    
-    // if (app.globalData.userInfo) {
-    //   this.setData({
-    //     userInfo: app.globalData.userInfo,
-    //     hasUserInfo: true
-    //   })
-    // } else if (this.data.canIUse) {
-    //   // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
-    //   // 所以此处加入 callback 以防止这种情况
-    //   app.userInfoReadyCallback = res => {
-    //     this.setData({
-    //       userInfo: res.userInfo,
-    //       hasUserInfo: true
-    //     })
-    //   }
-    // } else {
-    // 在没有 open-type=getUserInfo 版本的兼容处理
-    // wx.getUserInfo({
-    //   success: res => {
-    //     app.globalData.userInfo = res.userInfo
-    //     this.setData({
-    //       userInfo: res.userInfo,
-    //       hasUserInfo: true
-    //     })
-    //   }
-    // })
+
     //调用应用实例的方法获取全局数据
     app.getUserInfo(function (userInfo, code) {
       if (userInfo.avatarUrl == null || userInfo.avatarUrl.length == 0) {
@@ -56,33 +34,25 @@ Page({
         userInfo: userInfo,
         hasUserInfo: true
       })
-
     })
-    // }
-    // var items = []
-    // for (var i = 0; i < 5; i++) {
-    //   items.push({
-    //     content: i % 2 != 0 ? i + " 没有吃饱只有一个烦恼，吃饱了就有无数个烦恼啊烦恼。" : "",
-    //     // content: i + " 要么瘦，要么死",
-    //     isTouchMove: false, //默认全隐藏删除
-    //     isNull: i % 2 == 0
-    //   })
-    // }
     that.getDataFromServer()
 
-    // this.setData({
-    //   items: items
-    // })
-  },
+    wx.getStorageInfo({
+      success: function(res) {
+        // console.log(res.keys)
+        console.log("已使用空间：",res.currentSize)
+        console.log("存储限制：",res.limitSize)
+        if(res.currentSize > res.limitSize*0.8){
+          try{
+          wx.clearStorageSync()
 
-  // getUserInfo: function (e) {
-  //   console.log(e)
-  //   app.globalData.userInfo = e.detail.userInfo
-  //   this.setData({
-  //     userInfo: e.detail.userInfo,
-  //     hasUserInfo: true
-  //   })
-  // },
+          }catch(e){
+
+          }
+        }
+      },
+    })
+  },
 
   //tab切换
   tabClick: function (e) {
@@ -90,36 +60,42 @@ Page({
     var v = e.detail.value
     for (let i = 0; i < me.data.labels.length; i++) {
       if (v == me.data.labels[i].id) {
-        var index = i
-        var curID = me.data.labels[i].lid
-        me.initCurrentData(curID)
+        var indexTag = me.data.labels[i]
+        var curTag = me.data.labels[i].name
+        me.initCurrentData(curTag)
         break
       }
     }
 
     me.setData({
-      currentPage: v,
-      currPage: index,
-      curID: curID
+      currentPage: indexTag,
+      // currPage: index,
+      curTag: curTag
     })
   },
   //换一批
   refresh() {
     console.log("换一批")
-    this.initCurrentData(this.data.curID)
+    this.initCurrentData(this.data.curTag)
   },
 
   //获取标签，模板信息
   getDataFromServer() {
     var that = this
+    wx.showLoading({
+      title: '数据加载中',
+      mask:true
+    })
     req.getCYSetting(
       res => {
-        console.log(res)
+        // console.log(res)
+        wx.hideLoading()
         that.setData({
           masks: res.mask
         })
         that.doTemp(res.text)
       }, fail => {
+        wx.hideLoading()
         console.error("setting error", fail)
       })
   },
@@ -141,81 +117,87 @@ Page({
    */
   doTemp(text) {
     var
-      currentPage = 'r0',
+      currentPage = { id: 'r0', name: '减肥' },
       that = this,
       all = [],
       labels = [],
       items = [],
       tmp;
 
-    text = [
-      {
-        id: 1,
-        tag: "减肥",
-        text: "不瘦十斤，不换头像"
-      }, {
-        id: 1,
-        tag: "减肥",
-        text: "连体重都控制不了，何以控制人生？"
-      }, {
-        id: 1,
-        tag: "减肥",
-        text: "女人不对自己狠心，男人就会对自己死心。"
-      }, {
-        id: 1,
-        tag: "减肥",
-        text: "没有吃饱只有一个烦恼，吃饱了有无数烦恼"
-      },
-      {
-        id: 1,
-        tag: "减肥",
-        text: "一个烦恼，吃饱了有无数烦恼"
-      }, {
-        id: 1,
-        tag: "减肥",
-        text: "没有一个烦恼，吃饱了有无数烦恼"
-      }, {
-        id: 1,
-        tag: "减肥",
-        text: "吃饱有一个烦恼，吃饱了有无数烦恼"
-      }, {
-        id: 1,
-        tag: "减肥",
-        text: "没有无数烦恼"
-      }, {
-        id: 2,
-        tag: "热词",
-        text: "吃饱了有无数烦恼"
-      }, {
-        id: 2,
-        tag: "热词",
-        text: "吃饱了有无数烦恼"
-      }, {
-        id: 2,
-        tag: "热词",
-        text: "吃饱了有无数烦恼"
-      }, {
-        id: 2,
-        tag: "热词",
-        text: "吃饱了有无数烦恼"
-      }, {
-        id: 2,
-        tag: "热词",
-        text: "吃饱了有无数烦恼"
-      }, {
-        id: 3,
-        tag: "励志",
-        text: "吃饱励志"
-      }, {
-        id: 4,
-        tag: "个性",
-        text: "没有个性"
-      }
-    ]
+    // text = [
+    //   {
+    //     id: 1,
+    //     tag: "减肥",
+    //     text: "不瘦十斤，不换头像"
+    //   }, {
+    //     id: 1,
+    //     tag: "减肥",
+    //     text: "连体重都控制不了，何以控制人生？"
+    //   }, {
+    //     id: 1,
+    //     tag: "减肥",
+    //     text: "女人不对自己狠心，男人就会对自己死心。"
+    //   }, {
+    //     id: 1,
+    //     tag: "减肥",
+    //     text: "没有吃饱只有一个烦恼，吃饱了有无数烦恼"
+    //   },
+    //   {
+    //     id: 1,
+    //     tag: "减肥",
+    //     text: "一个烦恼，吃饱了有无数烦恼"
+    //   }, {
+    //     id: 1,
+    //     tag: "减肥",
+    //     text: "没有一个烦恼，吃饱了有无数烦恼"
+    //   }, {
+    //     id: 1,
+    //     tag: "减肥",
+    //     text: "吃饱有一个烦恼，吃饱了有无数烦恼"
+    //   }, {
+    //     id: 1,
+    //     tag: "减肥",
+    //     text: "没有无数烦恼"
+    //   }, {
+    //     id: 2,
+    //     tag: "热词",
+    //     text: "吃饱了有无数烦恼"
+    //   }, {
+    //     id: 2,
+    //     tag: "热词",
+    //     text: "吃饱了有无数烦恼"
+    //   }, {
+    //     id: 2,
+    //     tag: "热词",
+    //     text: "吃饱了有无数烦恼"
+    //   }, {
+    //     id: 2,
+    //     tag: "热词",
+    //     text: "吃饱了有无数烦恼"
+    //   }, {
+    //     id: 2,
+    //     tag: "热词",
+    //     text: "吃饱了有无数烦恼"
+    //   }, {
+    //     id: 3,
+    //     tag: "励志",
+    //     text: "吃饱励志"
+    //   }, {
+    //     id: 4,
+    //     tag: "个性",
+    //     text: "没有个性"
+    //   }
+    //   // , {
+    //   //   id: 5,
+    //   //   tag: "拼搏",
+    //   //   text: "没有个性"
+    //   // }
+    // ]
     for (let i = 0; i < text.length; i++) {
       tmp = text[i]
       all.push({
         id: tmp.id,
+        tag:tmp.tag,
         content: tmp.text,
         isTouchMove: false, //默认全隐藏删除
         isNull: false
@@ -227,34 +209,41 @@ Page({
         checked: i == 0
       })
     }
-    console.log(labels)
-    labels = that.unique(labels)
-    console.log(all)
-    console.log(labels)
-    currentPage = labels[0].id
+    // console.log(labels)
+    // labels = that.unique(labels)
+    labels = defLabels
+    console.log("texts", all)
+    console.log("labels", labels)
+    currentPage = labels[0]
     that.data.allItems = all
+    app.globalData.labels = defLabels //切换到我的页面备用
     that.setData({
-      labels: labels,
+      // labels: labels,
       currentPage: currentPage,
-      curID: labels[0].lid
+      curTag: labels[0].name,
     })
-    that.initCurrentData(labels[0].lid)
+    that.initCurrentData(labels[0].name)
   },
 
-  initCurrentData(curID) {
+  initCurrentData(curTag) {
+    if (!curTag) {
+      console.log("current id", curTag)
+      return
+    }
     var
       that = this,
       all = that.data.allItems,
       items = [];
     for (let k = 0; k < all.length; k++) {
       let t = all[k]
-      if (t.id == curID) {
+      if (t.tag == curTag) {
         items.push(t)
       }
     }
     while (items.length < 5) {
       items.push({
-        id: items[0].id,
+        id: -1,
+        tag:curTag,
         content: '',
         isTouchMove: false, //默认全隐藏删除
         isNull: true
@@ -267,12 +256,14 @@ Page({
       while (radomItems.length < 5) {
         oldIndex = Math.floor(Math.random() * items.length)
         radomItems.push(items[oldIndex])
-        items.splice(oldIndex,1)
+        items.splice(oldIndex, 1)
       }
       items = radomItems
     }
     that.setData({
-      items: items
+      items: items,
+      text_id: items[0].id,
+      text: items[0].content
     })
   },
 
@@ -286,39 +277,57 @@ Page({
         obj[arr[i].name] = true;
       }
     }
+    //不足四个标签，补齐4个
+    // if (result.length < 4) {
+    //     for(var j=0; j< defLabels.length;j++){
+    //       var t = defLabels[j]
+    //       for(var k=0; k< result.length;k++){
+    //          result[k].name == t.name
+    //       }
+    //     }
+    // }
     return result
   },
 
   // 制作头像
   createPhoto(e) {
     console.log("制作头像")
-    console.log(e.detail.formId)
-    var form = e.detail.formId
-    this.data.items[0].content = form
-    this.data.items[0].isNull = (form.length == 0)
-
-    this.setData({
-      items: this.data.items
-    })
+    // console.log(e.detail.formId)
+    // var form = e.detail.formId
+    // this.data.items[0].content = form
+    // this.data.items[0].isNull = (form.length == 0)
+    // this.setData({
+    //   items: this.data.items
+    // })
     var me = this
     wx.navigateTo({
-      url: '../templateSelect/template?masks='+JSON.stringify(me.data.items),
+      url: '../templateSelect/template?masks=' + JSON.stringify(me.data.masks) + "&text_id=" + me.data.text_id + "&text=" + me.data.text + "&tag=" + me.data.currentPage.name,
     })
   },
 
   editor(e) {
     console.log("修改内容", e.detail)
     var newValue = e.detail.value
-    let index = Number(e.currentTarget.dataset.id)
+    let index = Number(e.currentTarget.dataset.index)
 
     this.data.items[index].content = newValue
     this.data.items[index].isNull = (newValue.length == 0)
     // this.data.items[index].isTouchMove = (newValue.length == 0)
-
     this.setData({
-      items: this.data.items
+      items: this.data.items,
+      text: newValue
     })
+  },
 
+  selectItem(e) {
+    let text_id = Number(e.currentTarget.dataset.id)
+    let index = Number(e.currentTarget.dataset.index)
+    let text = this.data.items[index].content
+    console.log("tap item", text_id, index, text)
+    this.setData({
+      text_id: text_id,
+      text: text
+    })
   },
 
   //手指触摸动作开始 记录起点X坐标

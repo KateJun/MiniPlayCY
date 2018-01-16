@@ -3,10 +3,10 @@ var req = require("/utils/request.js")
 App({
   onLaunch: function () {
     // 展示本地存储能力
-    var logs = wx.getStorageSync('logs') || []
-    logs.unshift(Date.now())
-    wx.setStorageSync('logs', logs)
-
+    // var logs = wx.getStorageSync('logs') || []
+    // logs.unshift(Date.now())
+    // wx.setStorageSync('logs', logs)
+        
     var openid = wx.getStorageSync("openid")
     var session = wx.getStorageSync("session")
     var me = this
@@ -41,10 +41,10 @@ App({
     var that = this
     // 登录
     wx.login({
-      success: res => {
+      success: res0 => {
         // 发送 res.code 到后台换取 openId, sessionKey, unionId
-        console.log("login code:", res.code)
-        that.globalData.loginCode = res.code
+        console.log("login code:", res0.code)
+        that.globalData.loginCode = res0.code
         // 获取用户信息
         wx.getUserInfo({
           withCredentials: false,
@@ -56,7 +56,7 @@ App({
             if (that.userInfoReadyCallback) {
               that.userInfoReadyCallback(res)
             }
-            that.updateInfo(that, null)
+            that.updateInfo(that, res0.code)
           },
           fail: (res) => {
             wx.showModal({
@@ -81,10 +81,8 @@ App({
             })
           }
         })
-
-        that.updateInfo(that, res.code)
+        // that.updateInfo(that, res0.code)
       },
-
     })
   },
 
@@ -131,7 +129,7 @@ App({
   updateUser(that, openid, session) {
     // 更新用户信息
     var uInfo = that.globalData.userInfo
-    if (uInfo == null || that.globalData.hasUpdate) {
+    if (uInfo == null || that.globalData.hasUpdate || !openid || !session) {
       return
     }
     var d = {
@@ -162,6 +160,8 @@ App({
     loginCode: null,
     openid: '',
     session: '',
-    hasUpdate: false
+    hasUpdate: false,
+    labels:[],
+    update:true
   }
 })

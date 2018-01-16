@@ -27,15 +27,14 @@
   margin-bottom: 60rpx;
 }
 
-.scroll-view_H{
+.scroll-view_H {
   width: 100%;
   white-space: nowrap;
   margin-bottom: 50rpx;
- 
 }
 
 .flex_box {
-     margin-bottom: 50rpx;   
+  margin-bottom: 50rpx;
   width: 100%;
   background: transparent;
   height: 64rpx;
@@ -51,7 +50,6 @@
   justify-content: center;
   flex-direction: row;
   display: flex;
- 
 }
 
 .flex_item label {
@@ -97,14 +95,11 @@
   justify-content: flex-start;
   display: inline-flex;
   align-items: center;
- 
-  
 }
 
 .refresh {
   width: 40rpx;
   height: 40rpx;
- 
 }
 
 .refresh-text {
@@ -112,7 +107,6 @@
   font-size: 24rpx;
   line-height: 40rpx;
   text-align: center;
- 
 }
 
 .button-create {
@@ -144,7 +138,6 @@
   width: 100%;
   overflow: hidden;
   border-radius: 10rpx;
- 
 }
 
 .content {
@@ -195,7 +188,7 @@
 }*/
 
 .content-add-input {
-  width: 100%; 
+  width: 100%;
   color: white;
   text-align: center;
   white-space: nowrap;
@@ -204,8 +197,8 @@
   text-overflow: ellipsis;
   overflow: hidden;
   font-weight: bold;
-  font-size: 50rpx; 
-} 
+  font-size: 50rpx;
+}
 
 .del {
   background: #42a09f;

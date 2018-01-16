@@ -1,26 +1,33 @@
 <!--pages/mine/mine.wxml-->
 <include src="../index/bg.wxml" />
-<include src="empty.wxml"/>
-<view class='label-container'>   
+<include src="empty.wxml" />
+<view class='label-container'>
   <!-- <scroll-view class="scroll-view_H" scroll-x="{{true}}" scroll-y="{{false}}" scroll-with-animation="{{true}}" scroll-into-view="{{'ti'+currPage}}"> -->
   <radio-group bindchange="tabClick" class="flex_box">
     <view class="flex_item">
-      <label class="{{currentPage == item.id?'active':''}}" wx:for="{{labels}}" wx:key="key" id="{{'ti'+index}} ">
+      <label class="{{currentPage == item.name?'active':''}}" wx:for="{{labels}}" wx:key="key" id="{{'ti'+index}} ">
         {{item.name }}
-        <radio value="{{item.id}}" hidden="true" checked="{{item.checked}}"></radio>
+        <radio value="{{item.name}}" hidden="true" checked="{{item.checked}}"></radio>
       </label>
     </view>
   </radio-group>
   <!-- </scroll-view> -->
+  <scroll-view scroll-y='true' class='tps_content flex_auto' style='height:{{contentHeight}}px;width:100%'>
+    <radio-group bindchange=''>
+      <block wx:for='{{templates}}' wx:for-item='templateDouble' wx:key="templateDouble[0].key" wx:for-index='i'>
+        <view class='tps_content_double_item_container  {{ i == templates.length - 1? "tps_content_item_last": ""}}' >
+          <view class='tps_content_item_container' bindtap='selectedChanged' bindlongtap='scanImage' data-id='{{templateDouble[0].id}}'>
+            <image src='{{templateDouble[0].img}}' class='tps_content_item_img {{templateDouble[0].isChecked ? "tps_content_item_img_checked" : ""}}'>
+            </image>
+            <radio class='o_trans tps_content_item_radio p_a' checked='{{templateDouble[0].isChecked}}' value='{{templateDouble[0].id}}'></radio>
+          </view>
+          <view bindtap='selectedChanged' bindlongtap='scanImage' data-id='{{templateDouble[1].id}}' class='tps_content_item_container' style='visibility:{{templateDouble.length < 2 ? "hidden" : "visible"}};'>
+            <image src='{{templateDouble[1].img}}' class='tps_content_item_img {{templateDouble[1].isChecked ? "tps_content_item_img_checked" : ""}}'>
+            </image>
+            <radio class='o_trans tps_content_item_radio p_a' checked='{{(typeof(templateDouble[1]) != "undefined" && typeof(templateDouble[1].isChecked)!= "undefined") ? true : false}}' value='{{(typeof(templateDouble[1]) != "undefined" && typeof(templateDouble[1].id) != "undefined")? templateDouble[1].id : -1}}'></radio>
+          </view>
+        </view>
+      </block>
+    </radio-group>
+  </scroll-view>
 </view>
-
-<!-- <view class='progress_container'>
-      <view class='tp_progress_cover' style='display:{{progress.isLoading ? "flex" : "none"}}'>
-    <image src='../images/cover.png' class='tp_progress_cover_bg'></image>
-    <view class='tp_progress_container'>
-      <image class='tp_progress_bg' src='../images/progress_bg.png' style='width:800rpx'></image>
-      <image class='tp_progress_progress' src='../images/progress.png' mode="scaleToFill" style='width:800rpx;margin-left:-450rpx;' animation="{{animationT}}"></image>
-    </view>
-    <text class='tp_progress_text'>正在很努力地生成图像中...</text>
-  </view>
-</view> -->

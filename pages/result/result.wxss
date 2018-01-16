@@ -11,7 +11,7 @@
 
 .result_canvas_pic {
   width: 100%;
-  height: 678rpx;
+  height: 910rpx;
 }
 
 .result_canvas_palette {
