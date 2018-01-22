@@ -80,11 +80,12 @@ Page({
       }
       for (let i = 0; i < imageSize; i++) {
         var tmp = masks[i]
+        var img = req.url + tmp.url.replace("//", "/")
         group[Math.floor(i / 2)].push({
           // id: i,
           id: tmp.id,
           name: tmp.name,
-          img: req.url + tmp.url,
+          img: img,
           key: tmp.name,
           isChecked: i==0,
           localPath:''

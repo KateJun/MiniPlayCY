@@ -300,6 +300,12 @@ Page({
     //   items: this.data.items
     // })
     var me = this
+   if(!me.data.text){
+      wx.showToast({
+        title: '请选择词句',
+      })
+     return
+   }
     wx.navigateTo({
       url: '../templateSelect/template?masks=' + JSON.stringify(me.data.masks) + "&text_id=" + me.data.text_id + "&text=" + me.data.text + "&tag=" + me.data.currentPage.name,
     })
