@@ -1,0 +1,21 @@
+<!--pages/result/result.wxml-->
+<import src="../templates/tp_progress.wxml" />
+<view class='result'>
+  <template is="progress" data="{{...progress}}" />
+  <image src='../images/bg.jpg' class='content_bg'></image>
+
+  <canvas class='result_canvas_pic' canvas-id='{{CANVAS_PIC}}'></canvas>
+  <canvas class='result_canvas_palette' canvas-id='{{CANVAS_PALETTE}}' bindtouchstart='touchPaletteStart' bindtouchend='touchPalletteEnd'></canvas>
+  <view class='result_bottom_container'>
+    <image src='../images/bg_bottom.jpg' class='bottom_bg'></image>
+    <block wx:for="{{buttons}}">
+      <view class='result_btn_container' >
+        <image src='{{item.img}}' class='result_btn_img'></image>
+        <text class='result_btn_text'>{{item.name}}</text>
+        <button class='result_btn' hover-class='result_btn_checked' open-type='{{item.clickFunc == null ? "share" : ""}}' bindtap='{{item.clickFunc}}'></button>
+      </view>
+      <view class='result_divider' style='display:{{index == buttons.length - 1 ? "none" : "inline-block"}};'>
+      </view>
+    </block>
+  </view>
+</view>

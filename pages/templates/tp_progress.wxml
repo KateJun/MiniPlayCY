@@ -1,0 +1,18 @@
+<template name="progress">
+  <view class='tp_progress_cover' style='display:{{isLoading ? "flex" : "none"}}'>
+    <image src='../images/cover.jpg' class='tp_progress_cover_bg'></image>
+    <view class='tp_progress_container'>
+      <view class="progress">
+        <view class="progress-bar progress-bar-info progress-bar-striped active" style="width: {{progress}};">
+          <view class="progress-value">{{progress}}</view>
+        </view>
+      </view>
+      <!-- <image class='tp_progress_bg' src='../images/progress_bg.png'></image>
+      <view class='tp_progress_progress_container'>
+        <image class='tp_progress_progress' src='../images/progress.png' mode="scaleToFill" style='margin-left:-344rpx;'></image>
+        <view class='tp_progress_progress_left'></view>
+      </view> -->
+    </view>
+    <text class='tp_progress_text'>正在很努力地生成图像中...</text>
+  </view>
+</template>
