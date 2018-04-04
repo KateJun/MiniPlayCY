@@ -1,5 +1,6 @@
 // var ip = "http://172.19.11.56:8080"
-var ip = "https://wnews.mjmobi.com"
+var ip = "https://mprog.mjmobi.com"
+// var ip = "https://wnews.mjmobi.com"
 
 // var baseUrl = ip + '/word_image'
 var baseUrl = ip+'/word_image'

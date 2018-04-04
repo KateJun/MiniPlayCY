@@ -17,12 +17,13 @@ Page({
     // currPage: 0,
     masks: [],
     allItems: [],
-    curTag: 0,
+    curTag: '减肥',
     text_id: 1,
     text: ''
   },
 
   onLoad: function () {
+    app.globalData.labels = defLabels //切换到我的页面备用
     var that = this
 
     //调用应用实例的方法获取全局数据
@@ -35,18 +36,32 @@ Page({
         hasUserInfo: true
       })
     })
+    //默认页面
+    var items = []
+    while (items.length < 5) {
+      items.push({
+        id: -1,
+        tag: "减肥",
+        content: '',
+        isTouchMove: false, //默认全隐藏删除
+        isNull: true
+      })
+    }
+    that.setData({
+      items: items
+    })
     that.getDataFromServer()
 
     wx.getStorageInfo({
-      success: function(res) {
+      success: function (res) {
         // console.log(res.keys)
-        console.log("已使用空间：",res.currentSize)
-        console.log("存储限制：",res.limitSize)
-        if(res.currentSize > res.limitSize*0.8){
-          try{
-          wx.clearStorageSync()
+        console.log("已使用空间：", res.currentSize)
+        console.log("存储限制：", res.limitSize)
+        if (res.currentSize > res.limitSize * 0.8) {
+          try {
+            wx.clearStorageSync()
 
-          }catch(e){
+          } catch (e) {
 
           }
         }
@@ -57,6 +72,10 @@ Page({
   //tab切换
   tabClick: function (e) {
     var me = this;
+    if (me.checkData()) {
+      me.getDataFromServer()
+      return
+    }
     var v = e.detail.value
     for (let i = 0; i < me.data.labels.length; i++) {
       if (v == me.data.labels[i].id) {
@@ -76,7 +95,16 @@ Page({
   //换一批
   refresh() {
     console.log("换一批")
-    this.initCurrentData(this.data.curTag)
+    var me = this
+    if (me.checkData()) {
+      me.getDataFromServer()
+    } else {
+      me.initCurrentData(me.data.curTag)
+    }
+  },
+
+  checkData() {
+    return this.data.allItems == null || this.data.allItems.length == 0
   },
 
   //获取标签，模板信息
@@ -84,7 +112,7 @@ Page({
     var that = this
     wx.showLoading({
       title: '数据加载中',
-      mask:true
+      mask: true
     })
     req.getCYSetting(
       res => {
@@ -97,6 +125,9 @@ Page({
       }, fail => {
         wx.hideLoading()
         console.error("setting error", fail)
+        wx.showToast({
+          title: '服务器异常',
+        })
       })
   },
 
@@ -197,7 +228,7 @@ Page({
       tmp = text[i]
       all.push({
         id: tmp.id,
-        tag:tmp.tag,
+        tag: tmp.tag,
         content: tmp.text,
         isTouchMove: false, //默认全隐藏删除
         isNull: false
@@ -216,7 +247,7 @@ Page({
     console.log("labels", labels)
     currentPage = labels[0]
     that.data.allItems = all
-    app.globalData.labels = defLabels //切换到我的页面备用
+
     that.setData({
       // labels: labels,
       currentPage: currentPage,
@@ -243,7 +274,7 @@ Page({
     while (items.length < 5) {
       items.push({
         id: -1,
-        tag:curTag,
+        tag: curTag,
         content: '',
         isTouchMove: false, //默认全隐藏删除
         isNull: true
@@ -300,12 +331,18 @@ Page({
     //   items: this.data.items
     // })
     var me = this
-   if(!me.data.text){
+    if (!me.data.text) {
       wx.showToast({
         title: '请选择词句',
       })
-     return
-   }
+      return
+    }
+    if (me.data.masks == null || me.data.masks.length == 0) {
+      wx.showToast({
+        title: '服务器异常',
+      })
+      return
+    }
     wx.navigateTo({
       url: '../templateSelect/template?masks=' + JSON.stringify(me.data.masks) + "&text_id=" + me.data.text_id + "&text=" + me.data.text + "&tag=" + me.data.currentPage.name,
     })

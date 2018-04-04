@@ -40,7 +40,7 @@ Page({
     this.setData({
       labels: app.globalData.labels
     })
- 
+
   },
 
   /**
@@ -64,13 +64,13 @@ Page({
     var that = this
     wx.showLoading({
       title: '数据加载中',
-      mask:true
+      mask: true
     })
     req.getSaveList(param, suc => {
       wx.hideLoading()
       if (suc.images) {
         that.doTemp(that, suc.images)
-        app.globalData.update=false
+        app.globalData.update = false
       }
     }, fail => {
       wx.hideLoading()
@@ -136,8 +136,8 @@ Page({
     // }
     for (let i = 0; i < imageSize; i++) {
       let tmp = images[i]
-      if(!tmp.tag){
-          tmp.tag="减肥"
+      if (!tmp.tag) {
+        tmp.tag = "减肥"
       }
       labels.push({
         // lid: i,
@@ -238,7 +238,7 @@ Page({
 
   selectedChanged: function (e) {
     var id = e.currentTarget.dataset.id
-    console.log("选中的item",id);
+    console.log("选中的item", id);
     for (var i = 0; i < this.data.templates.length; i++) {
       var tps = this.data.templates[i];
       for (var j = 0; j < tps.length; j++) {
@@ -252,6 +252,7 @@ Page({
           // wx.navigateTo({
           //   url: '../result/result?fromMe=true&tag='+item.name+"&image_id="+item.key+"&mask="+item.img,
           // })
+          this.scanImage(e)
         } else if (item.isChecked) {//去除选中样式
           var changed = {};
           changed['templates[' + i + '][' + j + '].isChecked'] = false;
@@ -261,8 +262,8 @@ Page({
     }
   },
 
-// 长按预览图片
-  scanImage(e){
+  // 长按预览图片
+  scanImage(e) {
     var id = e.currentTarget.dataset.id
     console.log("长按选中的item", id);
     for (var i = 0; i < this.data.templates.length; i++) {
@@ -270,13 +271,14 @@ Page({
       for (var j = 0; j < tps.length; j++) {
         var item = tps[j];
         if (item.id == id) {//设置选中样式
-        wx.previewImage({
-          urls: [item.img],
-        })
-        break
+          wx.previewImage({
+            urls: [item.img],
+          })
+          break
         }
-      }}
-    
+      }
+    }
+
   },
 
   /**
@@ -290,9 +292,10 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    if(app.globalData.update){
-    this.getSavedImages()
+    if (app.globalData.update || this.data.allHistory == null || this.data.allHistory.length == 0) {
+      this.getSavedImages()
     }
+    console.log(app.globalData.update, "是否请求个人保存的图片？")
   },
 
   /**

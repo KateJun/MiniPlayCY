@@ -576,12 +576,14 @@ Page({
   initParam() {
     var me = this
     var colors = me.getColor(me.data.selectedColors)
+    var txtId = me.data.text_id
+    // var txtId = (me.data.text_id==-1?0:me.data.text_id)
     var param = {
       "mask_id": (me.data.mask_id),
       "colors": colors,
       "font": "",
       "text": me.data.text,
-      "text_id": me.data.text_id,
+      "text_id":txtId,
       "tag": me.data.tag
     }
     return param
